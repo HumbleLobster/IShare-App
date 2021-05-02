@@ -15,8 +15,9 @@ exports.mustBeLoggedIn = function(req,res,next){
 exports.login = function(req,res){
     let user = new User(req.body);
     user.login().then(function(result){
-        req.session.username = user.data.username;
-        req.session.avatar = user.avatar;
+        req.session.username = result.username;
+        req.session.avatar = result.avatar;
+        req.session._id = result._id;
         req.session.save((err)=>{
             res.redirect('/');
         })

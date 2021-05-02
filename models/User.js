@@ -78,7 +78,7 @@ User.prototype.login = function(){
             }else {
                 this.data = result;
                 this.getAvatar();
-                resolve("success");
+                resolve(this.data);
             }
         }).catch((err) => {
             reject("Invalid request");

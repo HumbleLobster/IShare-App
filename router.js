@@ -12,5 +12,6 @@ router.post('/login', userControllers.login);
 router.post('/logout' , userControllers.logout);
 
 router.get('/create-post' ,userControllers.mustBeLoggedIn, postControllers.createPost);
+router.post('/create-post' , userControllers.mustBeLoggedIn , postControllers.savePost);
 
 module.exports = router;
