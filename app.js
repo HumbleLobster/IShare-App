@@ -26,6 +26,12 @@ let sessionOptions = session({
 app.use(flash());
 app.use(sessionOptions);
 
+app.use(function(req,res,next){
+    res.locals.username = req.session.username;
+    res.locals.avatar = req.session.avatar;
+  next();
+})
+
 app.use(router);
 
 module.exports = app;
