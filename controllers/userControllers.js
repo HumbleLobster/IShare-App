@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const alert = require('alert');
+
 
 exports.mustBeLoggedIn = function(req,res,next){
     if(req.session.username){

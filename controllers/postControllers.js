@@ -1,5 +1,5 @@
 const Post = require('../models/post');
-const { post } = require('../router');
+
 
 exports.createPost = function(req,res){
     res.render('create-post');
@@ -12,4 +12,8 @@ exports.savePost = function(req,res){
     }).catch(()=>{
         res.send("failed");
     });
+}
+
+exports.viewSinglePost = function(req,res){
+    res.render('view-single-post');
 }

@@ -76,9 +76,12 @@ User.prototype.login = function(){
             }else if(!bcrypt.compareSync(this.data.password, result.password)){
                     reject("Invalid password");
             }else {
-                this.data = result;
                 this.getAvatar();
-                resolve(this.data);
+                resolve({
+                    username : result.username,
+                    avatar : this.avatar,
+                    _id : result._id
+                });
             }
         }).catch((err) => {
             reject("Invalid request");

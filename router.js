@@ -14,4 +14,6 @@ router.post('/logout' , userControllers.logout);
 router.get('/create-post' ,userControllers.mustBeLoggedIn, postControllers.createPost);
 router.post('/create-post' , userControllers.mustBeLoggedIn , postControllers.savePost);
 
+router.get('/post/:_id' , postControllers.viewSinglePost);
+
 module.exports = router;
