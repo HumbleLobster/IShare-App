@@ -18,4 +18,8 @@ router.get('/post/:_id' , postControllers.viewSinglePost);
 
 router.get('/profile/:username' ,userControllers.userExist ,userControllers.profile);
 
+
+router.get('/edit/:_id' , postControllers.viewEditPost);
+router.post('/edit/:_id' , postControllers.editPost);
+
 module.exports = router;

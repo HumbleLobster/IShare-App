@@ -4,6 +4,7 @@ const objectId = require('mongodb').ObjectID;
 const avatars = require("give-me-an-avatar");
 
 const Post = function(data){
+    this.clone = data;
     this.data = {
         title : data.body.title,
         body : data.body.body,
@@ -52,6 +53,7 @@ Post.queryPost = function(req){
             {$match : {_id :objectId(req.params._id)}},
             {$lookup : {from : "users" , localField :"author" ,foreignField : "_id", as : "details" }},
             {$project : {
+                id : 1,
                 title : 1,
                 body : 1,
                 date : 1,
@@ -87,6 +89,36 @@ Post.findPostByAuthorId = function(author_id){
             {$match : {author : id}}
         ]).toArray();
         resolve(posts);
+    })
+}
+
+Post.prototype.update = function(){
+    return promise = new Promise(async (resolve , reject)=> {
+        //verify the post exist
+        let results =await postCollections.aggregate([
+            {$match : {_id :objectId(this.clone.params._id)}}]).toArray();
+        if(results.length == 0)
+        {
+            reject("not found");
+            return;
+        }
+        //verify if the user is the original poster
+        if(!results[0].author.equals(this.data.author)){
+            reject("not authorised");
+            return;
+        }
+        
+        await postCollections.updateOne({_id :objectId(this.clone.params._id)}, { $set: {title: this.data.title, body: this.data.body} }, function(err, res) {
+            if (!err)
+            {
+               resolve("success");
+               return;
+            }
+            else{
+                reject("error");
+                return;
+            }
+        })
     })
 }
 
