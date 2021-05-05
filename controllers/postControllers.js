@@ -1,3 +1,5 @@
+const { ReplSet } = require('mongodb');
+const { post } = require('../app');
 const Post = require('../models/post');
 
 
@@ -15,5 +17,14 @@ exports.savePost = function(req,res){
 }
 
 exports.viewSinglePost = function(req,res){
-    res.render('view-single-post');
+    try{
+        const post = Post.queryPost(req).then((result)=>{
+            res.render('view-single-post' , {title : result.title , body : result.body , date : result.date , author : result.postedBy});
+        }).catch((err)=>{
+            res.send(err);
+        });
+    } catch {
+        res.send("404");
+    }
+    
 }

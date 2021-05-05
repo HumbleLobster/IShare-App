@@ -1,4 +1,5 @@
 const postCollections = require('../db').db().collection('posts');
+const userCollections = require('../db').db().collection('users');
 const objectId = require('mongodb').ObjectID;
 
 const Post = function(data){
@@ -36,6 +37,24 @@ Post.prototype.save = function(){
             })
         }
 
+    })
+}
+
+Post.queryPost = function(req){
+    return promise = new Promise((resolve,reject)=>{
+        postCollections.findOne({_id : objectId(req.params._id)}).then((result)=>{
+            userCollections.findOne({_id : objectId(result.author)}).then((value)=>{
+                const queryResult = {
+                    postedBy : value.username,
+                    title : result.title,
+                    body : result.body,
+                    date : result.date
+                }
+                resolve(queryResult);
+            }).catch();
+        }).catch((err)=>{
+            reject(err);
+        })
     })
 }
 
