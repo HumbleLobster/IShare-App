@@ -8,6 +8,7 @@ let userCollections = require('../db').db().collection('users');
 
 const alert = require('alert');
 const validator = require('validator');
+const e = require('express');
 
 const User = function(data){
     this.data = data;
@@ -29,11 +30,11 @@ User.prototype.validate = function(){
     
         if(validator.isAlphanumeric(this.data.username) && this.data.username.length >1 && this.data.username.length<31)
         {
-            const usernameExists = await userCollections.findOne({username : this.data.username});
-            if(usernameExists)
-            {
-                this.errors.push("UserName already taken");
-            }
+            await User.username_Exist(this.data.username).then((result)=>{
+                    this.errors.push("username already taken");
+            }).catch((err)=>{
+
+            })
         }
     
         if(validator.isEmail(this.data.email))
@@ -58,8 +59,17 @@ User.prototype.register =function(){
         if(!this.errors.length){
             this.data.password = bcrypt.hashSync(this.data.password, salt);
             this.getAvatar();
-            userCollections.insertOne(this.data,function(){
-                resolve();
+            userCollections.insertOne(this.data,(err,userCreated)=>{
+                if(!err)
+                {
+                    result = {
+                        username : userCreated.ops[0].username,
+                        avatar : this.avatar,
+                        _id : userCreated.ops[0]._id
+                    }
+                    resolve(result);
+                }
+                else reject("error");
             });
         }else{
             reject(this.errors);
@@ -94,6 +104,28 @@ User.prototype.getAvatar = function(){
         Name: "John Smith",
         Size: 128
     });
+}
+
+User.username_Exist = function(name){
+    return promise = new Promise(async (resolve, reject)=>{
+        let usernameExists = await userCollections.findOne({username : name});
+        if(usernameExists)
+        {
+            usernameExists = {
+                id : usernameExists._id,
+                username : usernameExists.username,
+                avatar : avatars.giveMeAnAvatar({
+                    Name : usernameExists.username,
+                    Size : 128
+                })
+            }
+            resolve(usernameExists);
+            return;
+        } else {
+            reject("error");
+            return;
+        }
+    })
 }
 
 module.exports = User

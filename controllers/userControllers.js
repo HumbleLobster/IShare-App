@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Post = require('../models/Post');
 
 
 exports.mustBeLoggedIn = function(req,res,next){
@@ -37,10 +38,11 @@ exports.logout = function(req,res){
 
 exports.register = function(req,res){
     let user = new User(req.body);
-    user.register().then(function(){
+    user.register().then(function(result){
         {
-            req.session.username = user.data.username;
-            req.session.avatar = user.avatar;
+            req.session.username = result.username;
+            req.session.avatar = result.avatar;
+            req.session._id = result._id;
             req.session.save((err)=>{
                 res.redirect('/');
             })
@@ -62,3 +64,21 @@ exports.home = function(req,res){
     }
 }
 
+exports.userExist = function(req,res,next){
+    let name = User.username_Exist(req.params.username).then((result)=>{
+        req.profileUser = result;
+        return next();
+    }).catch(()=>{
+        res.render('404');
+    })
+}
+
+
+exports.profile = function(req,res){
+    Post.findPostByAuthorId(req.profileUser.id).then((posts)=>{
+        res.render("profile" , {obj : req.profileUser , post : posts});
+    }).catch(()=>{
+        res.render("404");
+    })
+}
+    

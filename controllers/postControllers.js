@@ -16,15 +16,13 @@ exports.savePost = function(req,res){
     });
 }
 
-exports.viewSinglePost = function(req,res){
+exports.viewSinglePost =async function(req,res){
     try{
-        const post = Post.queryPost(req).then((result)=>{
-            res.render('view-single-post' , {title : result.title , body : result.body , date : result.date , author : result.postedBy});
-        }).catch((err)=>{
-            res.send(err);
-        });
+        const post =await Post.queryPost(req).then((result)=>{
+            res.render('view-single-post' , {title : result.title , body : result.body , date : result.date , author : result.author.username , useravatar : result.author.avatar});
+        })
     } catch {
-        res.send("404");
+        res.render("404");
     }
     
 }

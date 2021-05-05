@@ -16,4 +16,6 @@ router.post('/create-post' , userControllers.mustBeLoggedIn , postControllers.sa
 
 router.get('/post/:_id' , postControllers.viewSinglePost);
 
+router.get('/profile/:username' ,userControllers.userExist ,userControllers.profile);
+
 module.exports = router;

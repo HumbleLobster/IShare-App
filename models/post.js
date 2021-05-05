@@ -1,6 +1,7 @@
 const postCollections = require('../db').db().collection('posts');
 const userCollections = require('../db').db().collection('users');
 const objectId = require('mongodb').ObjectID;
+const avatars = require("give-me-an-avatar");
 
 const Post = function(data){
     this.data = {
@@ -41,20 +42,51 @@ Post.prototype.save = function(){
 }
 
 Post.queryPost = function(req){
-    return promise = new Promise((resolve,reject)=>{
-        postCollections.findOne({_id : objectId(req.params._id)}).then((result)=>{
-            userCollections.findOne({_id : objectId(result.author)}).then((value)=>{
-                const queryResult = {
-                    postedBy : value.username,
-                    title : result.title,
-                    body : result.body,
-                    date : result.date
+    return promise = new Promise(async (resolve,reject)=>{
+        if(!objectId.isValid(req.params._id))
+        {
+            reject("404 not found");
+            return ;
+        }
+        let results =await postCollections.aggregate([
+            {$match : {_id :objectId(req.params._id)}},
+            {$lookup : {from : "users" , localField :"author" ,foreignField : "_id", as : "details" }},
+            {$project : {
+                title : 1,
+                body : 1,
+                date : 1,
+                author : {$arrayElemAt : ["$details", 0]},
+            }}
+        ]).toArray();
+
+        
+
+        if(results.length){
+            results = results.map(function(result){
+                result.author = {
+                    username : result.author.username,
+                    avatar : avatars.giveMeAnAvatar({
+                        Name: "John Smith",
+                        Size: 128
+                    })
                 }
-                resolve(queryResult);
-            }).catch();
-        }).catch((err)=>{
-            reject(err);
-        })
+
+                resolve(result);
+            })
+        } else {
+            reject("Not found");
+        }
+        
+    })
+}
+
+Post.findPostByAuthorId = function(author_id){
+    id = objectId(author_id);
+    return promise = new Promise(async (resolve,reject)=>{
+        let posts = await postCollections.aggregate([
+            {$match : {author : id}}
+        ]).toArray();
+        resolve(posts);
     })
 }
 
