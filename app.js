@@ -2,6 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const flash = require('connect-flash');
 const MongoStore = require('connect-mongo');
+const markdown = require('marked');
+const sanitizeHtml = require('sanitize-html');
 
 const app = express();
 const ejs = require('ejs');
@@ -27,6 +29,11 @@ app.use(flash());
 app.use(sessionOptions);
 
 app.use(function(req,res,next){
+    res.locals.filter = function(content){
+      return markdown(sanitizeHtml(content));
+    }
+    res.locals.errors = req.flash("errors");
+    res.locals.success = req.flash("success");
     res.locals.username = req.session.username;
     res.locals.avatar = req.session.avatar;
   next();

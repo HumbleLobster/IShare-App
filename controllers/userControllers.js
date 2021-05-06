@@ -48,8 +48,8 @@ exports.register = function(req,res){
             })
         }
     }).catch(function(error){
-        req.flash('errors' , error);
-        req.session.save(function(){
+        req.flash("errors" , error);
+        req.session.save(function(err){
             res.redirect("/");
         })
     });
@@ -60,7 +60,7 @@ exports.home = function(req,res){
     {
         res.render('home-loggedin-no-result');
     }else{
-        res.render('home-guest' , {errors : req.flash('errors')});
+        res.render('home-guest');
     }
 }
 

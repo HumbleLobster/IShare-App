@@ -4,10 +4,10 @@
   <div class="container py-md-5 container--narrow">
     <div class="d-flex justify-content-between">
       <h2><%=title%></h2>
-      <% if(username){%>
+      <% if(username == author){%>
       <span class="pt-2">
         <a href="/edit/<%=id%>" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
-        <form class="delete-post-form d-inline" action="#" method="POST">
+        <form class="delete-post-form d-inline" action="/delete/<%=id%>" method="POST">
           <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
         </form>
       </span>
@@ -19,7 +19,7 @@
       Posted by <a href="#"><%=author%></a> on <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%></p>
 
     <div class="body-content">
-      <p><%=body%></p>
+      <p><%-filter(body)%></p>
     </div>
 
   </div>

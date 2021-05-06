@@ -21,5 +21,6 @@ router.get('/profile/:username' ,userControllers.userExist ,userControllers.prof
 
 router.get('/edit/:_id' , postControllers.viewEditPost);
 router.post('/edit/:_id' , postControllers.editPost);
+router.post('/delete/:_id' , postControllers.deletePost);
 
 module.exports = router;

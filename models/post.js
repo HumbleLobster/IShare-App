@@ -122,4 +122,34 @@ Post.prototype.update = function(){
     })
 }
 
+Post.prototype.delete = function(){
+    return promise = new Promise(async (resolve , reject)=> {
+        //verify the post exist
+        let results =await postCollections.aggregate([
+            {$match : {_id :objectId(this.clone.params._id)}}]).toArray();
+        if(results.length == 0)
+        {
+            reject("not found");
+            return;
+        }
+        //verify if the user is the original poster
+        if(!results[0].author.equals(this.data.author)){
+            reject("not authorised");
+            return;
+        }
+        
+        await postCollections.deleteOne({_id :objectId(this.clone.params._id)}, function(err, res) {
+            if (!err)
+            {
+               resolve("success");
+               return;
+            }
+            else{
+                reject("error");
+                return;
+            }
+        })
+    })
+}
+
 module.exports = Post ; 
