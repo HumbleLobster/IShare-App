@@ -23,4 +23,6 @@ router.get('/edit/:_id' , postControllers.viewEditPost);
 router.post('/edit/:_id' , postControllers.editPost);
 router.post('/delete/:_id' , postControllers.deletePost);
 
+router.post('/search' , postControllers.search);
+
 module.exports = router;

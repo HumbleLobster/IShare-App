@@ -15,8 +15,8 @@
     </div>
       
     <p class="text-muted small mb-4">
-      <a href="#"><img class="avatar-tiny" src="<%=useravatar%>"></a>
-      Posted by <a href="#"><%=author%></a> on <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%></p>
+      <a href="/profile/<%=author%>"><img class="avatar-tiny" src="<%=useravatar%>"></a>
+      Posted by <a href="/profile/<%=author%>"><%=author%></a> on <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%></p>
 
     <div class="body-content">
       <p><%-filter(body)%></p>

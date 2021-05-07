@@ -69,3 +69,11 @@ exports.deletePost = function(req,res){
         res.render("404");
     })
 }
+
+exports.search = function(req,res){
+    Post.search(req.body.searchTerm).then((posts)=>{
+        res.json(posts);
+    }).catch(()=>{
+        res.json([]);
+    })
+}

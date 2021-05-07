@@ -53,7 +53,7 @@ Post.queryPost = function(req){
             {$match : {_id :objectId(req.params._id)}},
             {$lookup : {from : "users" , localField :"author" ,foreignField : "_id", as : "details" }},
             {$project : {
-                id : 1,
+                _id : 1,
                 title : 1,
                 body : 1,
                 date : 1,
@@ -149,6 +149,41 @@ Post.prototype.delete = function(){
                 return;
             }
         })
+    })
+}
+
+Post.search = function(searchterm){
+    return new Promise(async (resolve,reject)=>{
+        if(typeof(searchterm)=="string"){
+            let posts = await postCollections.aggregate([
+                {$match : {$text : {$search : searchterm}}},
+                {$lookup : {from : "users" , localField :"author" ,foreignField : "_id", as : "details" }},
+                {$project : {
+                    author : {$arrayElemAt : ["$details", 0]},
+                    title : 1,
+                    date : 1,
+                    body : 1
+                }},
+                {$sort : {score : {$meta : "textScore"} }}
+                
+            ]).toArray();
+
+            let new_results = [];
+            posts.map((post)=>{
+                post.author = {
+                    username : post.author.username,
+                    avatar : avatars.giveMeAnAvatar({
+                        Name: "John Smith",
+                        Size: 128
+                    })
+                }
+                new_results.push(post);
+            })
+            resolve(new_results);
+        } else {
+            
+            reject("Invalid search");
+        }
     })
 }
 

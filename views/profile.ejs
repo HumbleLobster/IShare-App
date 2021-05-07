@@ -21,7 +21,7 @@
       <%post.forEach(ele => { %>
         <a href="/post/<%=ele._id%>" class="list-group-item list-group-item-action">
         <img class="avatar-tiny" src="<%=obj.avatar%>">
-        <strong><%=ele.title%></strong> on <%=ele.date%>
+        <strong><%=ele.title%></strong> on <%=ele.date.getDay()%>/<%=ele.date.getMonth()%>/<%=ele.date.getFullYear()%>
       </a>
       <% }); %>
     </div>
