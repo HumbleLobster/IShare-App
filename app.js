@@ -41,4 +41,21 @@ app.use(function(req,res,next){
 
 app.use(router);
 
-module.exports = app;
+
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+io.use(function(socket,next) {
+  sessionOptions(socket.request,socket.request.res,next);
+});
+
+io.on('connection', (socket) => {
+  if(socket.request.session.username){
+    socket.on('chat message', (msg) => {
+      io.emit('chat message', {message : msg , id : socket.id , user : socket.request.session});
+    });
+  }
+});
+
+
+module.exports = server;

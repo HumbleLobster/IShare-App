@@ -8,13 +8,9 @@ client.connect(err => {
     if(!err)
     {
         module.exports = client;
-        // client.db().collection('sessions').drop(function(err,resp){
-        //     if(!err)
-        //         console.log("success");
-        //     else console.log(err);
-        // });
-        const app = require('./app');
         
+        const app = require('./app');
+
         app.listen(process.env.PORT , ()=>{
             console.log("server is running");
         });
@@ -24,3 +20,10 @@ client.connect(err => {
 });
 
 
+
+
+// client.db().collection('sessions').drop(function(err,resp){
+        //     if(!err)
+        //         console.log("success");
+        //     else console.log(err);
+        // });

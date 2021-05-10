@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 const userControllers = require('./controllers/userControllers');
 const postControllers = require('./controllers/postControllers');
 const followControllers = require('./controllers/followControllers');
