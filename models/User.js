@@ -5,10 +5,13 @@ const md5 = require('md5');
 const avatars = require("give-me-an-avatar");
 
 let userCollections = require('../db').db().collection('users');
+let followCollections = require('../db').db().collection('follows');
+const postCollections = require('../db').db().collection('posts');
 
 const alert = require('alert');
 const validator = require('validator');
 const e = require('express');
+const { ObjectId } = require('bson');
 
 const User = function(data){
     this.data = data;
@@ -128,4 +131,46 @@ User.username_Exist = function(name){
     })
 }
 
+User.findFeeds = function(author_id){
+    return new Promise (async ( resolve , reject) =>{
+        let followedId = await followCollections.aggregate([
+            {$match : {author_id : ObjectId(author_id)}},
+        ]).toArray();
+
+        followedId = followedId.map((user)=>{
+            return user.followed_id;
+        })
+
+        let feeds = await postCollections.aggregate([
+            {$match : {author : {$in : followedId}}},
+            {$lookup : {from: 'users' , localField : "author" , foreignField : "_id" , as: "userDetail"}},
+            {$project :
+                {
+                    title : 1,
+                    body : 1,
+                    date : 1,
+                    username : { $arrayElemAt: [ "$userDetail.username", 0 ] }
+                }
+            },
+            {$sort : {date : -1}}
+        ]).toArray();
+        feeds = feeds.map((feed)=>{
+            feed = {
+                _id : feed._id,
+                title : feed.title , 
+                body  : feed.body,
+                username : feed.username,
+                avatar : avatars.giveMeAnAvatar({
+                    Name: feed.username,
+                    Size: 128
+                }),
+                date : feed.date
+            }
+            return feed;
+        })
+        resolve(feeds);
+    })
+}
+
 module.exports = User
+

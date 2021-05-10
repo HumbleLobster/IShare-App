@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
+const Follow = require('../models/follow');
 
 
 exports.mustBeLoggedIn = function(req,res,next){
@@ -55,10 +56,14 @@ exports.register = function(req,res){
     });
 }
 
-exports.home = function(req,res){
+exports.home = async function(req,res){
     if(req.session.username)
     {
-        res.render('home-loggedin-no-result');
+        await User.findFeeds(req.session._id).then((feeds)=>{
+            res.render('home-loggedin-no-result' , {feeds : feeds});
+        }).catch(()=>{
+            res.render('home-loggedin-no-result');
+        })
     }else{
         res.render('home-guest');
     }
@@ -74,9 +79,27 @@ exports.userExist = function(req,res,next){
 }
 
 
-exports.profile = function(req,res){
+exports.profile = async function(req,res){
+    let follows = false;
+    await Follow.is_following(req.session._id , req.profileUser.id).then(()=>{
+        follows = true;
+    }).catch(()=>{
+        follows = false;
+    });
+    
+    let followers = [];
+    let following = [];
+
+    await Follow.followers(req.profileUser.id).then((result)=>{
+        followers = result;
+    }).catch(()=>{});
+    await Follow.following(req.profileUser.id).then((result)=>{
+        following = result;
+    }).catch(()=>{});
+
+
     Post.findPostByAuthorId(req.profileUser.id).then((posts)=>{
-        res.render("profile" , {obj : req.profileUser , post : posts});
+        res.render("profile" , {obj : req.profileUser , post : posts , follows : follows , followers:followers , following:following});
     }).catch(()=>{
         res.render("404");
     })

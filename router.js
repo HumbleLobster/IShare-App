@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userControllers = require('./controllers/userControllers');
 const postControllers = require('./controllers/postControllers');
+const followControllers = require('./controllers/followControllers');
 
 router.get('/' ,userControllers.home);
 router.post('/register' , userControllers.register);
@@ -24,5 +25,7 @@ router.post('/edit/:_id' , postControllers.editPost);
 router.post('/delete/:_id' , postControllers.deletePost);
 
 router.post('/search' , postControllers.search);
+router.post('/follow/:username' ,userControllers.mustBeLoggedIn ,userControllers.userExist, followControllers.addFollow);
+router.post('/unfollow/:username' ,userControllers.mustBeLoggedIn ,userControllers.userExist, followControllers.removeFollow);
 
 module.exports = router;

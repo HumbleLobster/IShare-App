@@ -5,19 +5,45 @@
     <%-include("./includes/flash-message");%>
 
     <h2><img class="avatar-small" src="<%=obj.avatar%>"> <%=obj.username%>  
-      <form class="ml-2 d-inline" action="#" method="POST">
-        <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>
-        <!-- <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button> -->
-      </form>
+        <% if(username != obj.username){%>
+          <% if(follows) { %>
+              <form class="ml-2 d-inline" action="/unfollow/<%=obj.username%>" method="POST">
+                <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button>
+              </form>
+          <%} else {%>
+                <form class="ml-2 d-inline" action="/follow/<%=obj.username%>" method="POST">
+                  <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>
+                </form>
+                
+          <% }%>
+        <%}%>
     </h2>
   
     <div class="profile-nav nav nav-tabs pt-2 mb-4">
-      <a href="#" class="profile-nav-link nav-item nav-link active">Posts: 3</a>
-      <a href="#" class="profile-nav-link nav-item nav-link ">Followers: 3</a>
-      <a href="#" class="profile-nav-link nav-item nav-link ">Following: 2</a>
+      <a href="#posts-nav-bar" class="Posts profile-nav-link nav-item nav-link ">Posts: <%=post.length%></a>
+      <a href="#followers-nav-bar" class="Followers profile-nav-link nav-item nav-link ">Followers: <%=followers.length%></a>
+      <a href="#following-nav-bar" class="Following profile-nav-link nav-item nav-link " >Following: <%=following.length%></a>
     </div>
   
-    <div class="list-group">
+    <div id = "followers-nav-bar" class="followers-nav-bar list-group" style="display:none">
+      <%followers.forEach(ele => { %>
+        <a href="/profile/<%=ele.username%>" class="list-group-item list-group-item-action">
+        <img class="avatar-tiny" src="<%=ele.avatar%>">
+        <strong><%=ele.username%></strong>
+      </a>
+      <% }); %>
+    </div>
+
+    <div id ="following-nav-bar" class="following-nav-bar list-group" style="display:none">
+      <%following.forEach(ele => { %>
+        <a href="/profile/<%=ele.username%>" class="list-group-item list-group-item-action">
+        <img class="avatar-tiny" src="<%=ele.avatar%>">
+        <strong><%=ele.username%></strong>
+      </a>
+      <% }); %>
+    </div>
+
+    <div id = "posts-nav-bar" class="posts-nav-bar list-group">
       <%post.forEach(ele => { %>
         <a href="/post/<%=ele._id%>" class="list-group-item list-group-item-action">
         <img class="avatar-tiny" src="<%=obj.avatar%>">
@@ -25,6 +51,7 @@
       </a>
       <% }); %>
     </div>
+
   </div>
   
   <!-- footer begins -->
