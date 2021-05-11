@@ -104,4 +104,20 @@ exports.profile = async function(req,res){
         res.render("404");
     })
 }
+
+exports.usernameTaken = function(req,res){
+    User.username_Exist(req.body.username).then((result)=>{
+        res.json("true");
+    }).catch(()=>{
+        res.json("false");
+    })
+}
+
+exports.emailTaken = function(req,res){
+    User.email_Exist(req.body.email).then((result)=>{
+        res.json("true");
+    }).catch(()=>{
+        res.json("false");
+    })
+}
     

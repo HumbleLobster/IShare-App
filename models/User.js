@@ -42,11 +42,11 @@ User.prototype.validate = function(){
     
         if(validator.isEmail(this.data.email))
         {
-            const emailExists = await userCollections.findOne({email : this.data.email});
-            if(emailExists)
-            {
-                this.errors.push("email already taken");
-            }
+            await User.email_Exist(this.data.email).then(()=>{
+                this.errors.push("email is already taken");
+            }).catch(()=>{
+
+            })
         }
         resolve();
     })
@@ -123,6 +123,20 @@ User.username_Exist = function(name){
                 })
             }
             resolve(usernameExists);
+            return;
+        } else {
+            reject("error");
+            return;
+        }
+    })
+}
+
+User.email_Exist = function(name){
+    return promise = new Promise(async (resolve, reject)=>{
+        let emailExists = await userCollections.findOne({email : name});
+        if(emailExists)
+        {
+            resolve(emailExists);
             return;
         } else {
             reject("error");

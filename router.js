@@ -27,4 +27,7 @@ router.post('/search' , postControllers.search);
 router.post('/follow/:username' ,userControllers.mustBeLoggedIn ,userControllers.userExist, followControllers.addFollow);
 router.post('/unfollow/:username' ,userControllers.mustBeLoggedIn ,userControllers.userExist, followControllers.removeFollow);
 
+router.post('/username-exist' , userControllers.usernameTaken);
+router.post('/email-exist' , userControllers.emailTaken);
+
 module.exports = router;

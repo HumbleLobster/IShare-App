@@ -1,4 +1,5 @@
 export default class Chat {
+    
     constructor(){
         this.socket = io();
         this.id;
@@ -43,6 +44,7 @@ export default class Chat {
 
     event(){
         this.chatIcon.addEventListener("click" , ()=>{
+            this.chatField.focus();
             this.showChatModel();
             this.chatFormUtility();
         });
