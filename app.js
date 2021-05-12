@@ -4,6 +4,7 @@ const flash = require('connect-flash');
 const MongoStore = require('connect-mongo');
 const markdown = require('marked');
 const sanitizeHtml = require('sanitize-html');
+const csrf = require('csurf');
 
 const app = express();
 const ejs = require('ejs');
@@ -39,7 +40,28 @@ app.use(function(req,res,next){
   next();
 })
 
+app.use(csrf());
+
+app.use(function(req,res,next){
+  res.locals.csrfToken = req.csrfToken();
+  next();
+})
+
+
 app.use(router);
+
+// error - handling (due to routes) middleWare
+app.use(function(err,req,res,next){
+    if(err.code == 'EBADCSRFTOKEN'){
+      req.flash('errors', "cross-site register forgery detected");
+      req.session.save((err)=>{
+        res.redirect('/');
+        next();
+      })
+    } else {
+      res.render('404');
+    }
+})
 
 
 const server = require('http').Server(app);

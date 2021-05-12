@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export default class Validate {
     constructor(){
+        this._csrf = document.querySelector('input[name="_csrf"]').value;
         this.usernameField = document.querySelector("#username-register");
         this.passwordField = document.querySelector("#password-register");
         this.emailField = document.querySelector("#email-register");
@@ -80,7 +81,7 @@ export default class Validate {
                     return;
                 }
 
-                axios.post('/username-exist' , {username : input}).then((exist)=>{
+                axios.post('/username-exist' , {_csrf : this._csrf ,username : input}).then((exist)=>{
                     if(exist.data != "true"){
                         this.usernameField.setCustomValidity("");
                         this.usernameField.reportValidity();
@@ -113,7 +114,7 @@ export default class Validate {
                     return;
                 }
 
-                axios.post('/email-exist' , {email : input}).then((exist)=>{
+                axios.post('/email-exist' , {_csrf : this._csrf ,email : input}).then((exist)=>{
                     console.log(exist.data);
                     if(exist.data != "true"){
                         this.emailField.setCustomValidity("");
