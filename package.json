@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "give-me-an-avatar": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "marked": "^2.0.3",
     "md5": "^2.3.0",
     "mongodb": "^3.6.6",

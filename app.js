@@ -9,11 +9,14 @@ const csrf = require('csurf');
 const app = express();
 const ejs = require('ejs');
 const router = require('./router');
+const apiRouter = require('./apiRouter');
 
 app.use(express.static('public'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api',apiRouter);
 
 app.set('view engine' , 'ejs');
 app.set('views', 'views');
