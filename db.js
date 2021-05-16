@@ -11,10 +11,11 @@ client.connect(err => {
         
         const app = require('./app');
 
-        
-        app.listen(process.env.PORT , ()=>{
-            console.log("server is running");
-        });
+        let port = process.env.PORT;
+        if (port == null || port == "") {
+        port = 3000;
+        }
+        app.listen(port);
     }else{
         console.log(err);
     }
