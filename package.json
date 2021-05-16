@@ -7,9 +7,7 @@
     "node": "12.18.4"
     },
   "scripts": {
-    "start": "node db.js",
-    "nodemon": "nodemon db --ignore public/ --ignore frontend-js",
-    "watch": "webpack --watch",
+    "watch": "nodemon db --ignore frontend-js --ignore public/ & webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aman",
