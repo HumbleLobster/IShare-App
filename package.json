@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node db.js",
     "nodemon": "nodemon db --ignore public/ --ignore frontend-js",
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
